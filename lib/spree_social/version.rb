@@ -9,10 +9,9 @@ module SpreeSocial
 
   module VERSION
     MAJOR = 3
-    MINOR = 2
-    TINY  = 1
-    PRE   = 'alpha'.freeze
+    MINOR = 3
+    TINY  = 2
 
-    STRING = [MAJOR, MINOR, TINY, PRE].compact.join('.')
+    STRING = [MAJOR, MINOR, TINY].compact.join('.')
   end
 end
