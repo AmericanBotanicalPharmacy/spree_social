@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/spree-contrib/spree_social.svg?branch=master)](https://travis-ci.org/spree-contrib/spree_social)
 [![Code Climate](https://codeclimate.com/github/spree-contrib/spree_social/badges/gpa.svg)](https://codeclimate.com/github/spree-contrib/spree_social)
+[![Reviewed by Hound](https://img.shields.io/badge/Reviewed_by-Hound-8E64B0.svg)](https://houndci.com)
 
 Core for all social media related functionality for Spree.
 The Spree Social gem handles authorization, account creation and association through social media sources such as Twitter and Facebook.
@@ -68,7 +69,7 @@ Alternatively you can ship keys as environment variables and create these Authen
 
 ```ruby
 # Ensure our environment is bootstrapped with a facebook connect app
-if ActiveRecord::Base.connection.table_exists? 'spree_authentication_methods'
+if ActiveRecord::Base.connection.data_source_exists? 'spree_authentication_methods'
   Spree::AuthenticationMethod.where(environment: Rails.env, provider: 'facebook').first_or_create do |auth_method|
     auth_method.api_key = ENV['FACEBOOK_APP_ID']
     auth_method.api_secret = ENV['FACEBOOK_APP_SECRET']
@@ -83,7 +84,7 @@ end
 
 ## Setup the Applications at the Respective Sources
 
-OAuth Applications @ Facebook, Twitter and / or Github are supported out of the box but you will need to setup applications are each respective site as follows for public use and for development.
+OAuth Applications @ Facebook, Twitter, Google and / or Github are supported out of the box but you will need to setup applications are each respective site as follows for public use and for development.
 
 > All URLs must be in the form of domain.tld you may add a port as well for development
 
@@ -130,9 +131,14 @@ OAuth Applications @ Facebook, Twitter and / or Github are supported out of the 
 
 > The app console is available at [https://login.amazon.com/manageApps](https://login.amazon.com/manageApps)
 
-### Other OAuth sources that are currently supported
+### Google OAuth2
+[Google / APIs / Credentials/ Create Credential][12]
 
-* Google (OAuth)
+1. In the APIs and Services dashboard, visit 'Credentials' on the side, then select 'Create Credentials' and 'Oauth client ID'.
+2. Name the Application, select "Web Application" as a type.
+3. Under "Authorized redirect URIs", add your site (example: http://localhost:3000/users/auth/google_oauth2/callback)
+
+> More info: https://developers.google.com/identity/protocols/OAuth2
 
 ## Adding other OAuth sources
 
@@ -174,3 +180,4 @@ Copyright (c) 2010-2015 [John Dyer][7] and [contributors][8], released under the
 [9]: https://github.com/spree-contrib/spree_social/blob/master/LICENSE.md
 [10]: https://login.amazon.com/manageApps
 [11]: https://github.com/spree-contrib/spree_social/blob/master/CONTRIBUTING.md
+[12]: https://console.developers.google.com
