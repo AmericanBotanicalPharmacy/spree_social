@@ -12,6 +12,16 @@ module SpreeSocial
 
     config.autoload_paths += %W(#{config.root}/lib)
 
+    # Resolves omniauth_callback error on development env
+    # See https://github.com/spree-contrib/spree_social/issues/193#issuecomment-296585601
+    if Rails::VERSION::MAJOR >= 5
+      initializer 'main_app.auto_load' do |app|
+        Rails.application.reloader.to_run(:before) do
+          Rails.application.reloader.prepare!
+        end
+      end
+    end
+
     initializer 'spree_social.environment', before: 'spree.environment' do
       Spree::SocialConfig = Spree::SocialConfiguration.new
     end
@@ -37,6 +47,12 @@ module SpreeSocial
 
   # Setup all OAuth providers
   def self.init_provider(provider)
+    begin
+      ActiveRecord::Base.connection_pool.with_connection(&:active?)
+    rescue
+      return
+    end
+
     return unless ActiveRecord::Base.connection.data_source_exists?('spree_authentication_methods')
     key, secret = nil
     Spree::AuthenticationMethod.where(environment: ::Rails.env).each do |auth_method|
@@ -50,7 +66,7 @@ module SpreeSocial
 
   def self.setup_key_for(provider, key, secret)
     Devise.setup do |config|
-      config.omniauth provider, key, secret, setup: true, scope: 'email', info_fields: 'email, name'
+      config.omniauth provider, key, secret, setup: true, info_fields: 'email, name'
     end
   end
 end
